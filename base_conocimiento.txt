@@ -1,4 +1,29 @@
 ================================================================================
+PROCESO DE RESUMEN Y NOTIFICACIÓN AUTOMÁTICA AL ADMINISTRADOR
+================================================================================
+Cuando la IA obtiene la confirmación del pedido, debe generar y enviar el siguiente resumen al número de administración (+51906538844):
+
+* HORA DE PEDIDO: Registrar la hora exacta en que el cliente confirma el pedido.
+* NOMBRE DEL CLIENTE: Si el cliente lo proporciona, incluirlo; si no, dejar como "No proporcionado".
+* DIRECCIÓN: Usar la dirección proporcionada por el cliente, ya sea compartida por Google Maps o escrita manualmente.
+* CON CUÁNTO PAGA O SI FALTA PAGAR: Si el cliente pagará en efectivo, indicar el monto con el que pagará; si ya pagó por YAPE, indicar "Pagado por YAPE"; si falta pagar, indicar "Falta pagar".
+* SU PEDIDO: Listar todos los productos y cantidades confirmados.
+
+Formato de mensaje a enviar al administrador:
+
+"""
+🟢 NUEVO PEDIDO CONFIRMADO
+Hora: [hora]
+Cliente: [nombre]
+Dirección: [dirección]
+Pago: [detalle de pago]
+Pedido:
+[detalle de productos]
+"""
+
+La IA debe enviar este resumen automáticamente al número +51906538844 cada vez que un pedido es confirmado.
+================================================================================
+================================================================================
 ÍNDICE DE SECCIONES Y MARCADORES
 ================================================================================
 1. Atención y Procesos
@@ -904,14 +929,14 @@ Solución y aprendizaje para la IA:
 
 ================================================================================
 PROMOCIÓN "La hora de descuento"
-- Platos a S/14.00 de 9am a 3pm (solo local o recojo, no delivery)
+- Platos a S/14.00 de 9am a 3pm (solo local, recojo Y delivery)
   Platos: Lasaña mixta, Lasaña de pollo, Lasaña al pesto, Fetuccine alfredo, Fetuccine alpesto, Fetuccine boloñesa, Fetuccine alfredo, Broaster 6und + chaufa, BBQ 6und + chaufa, Acevichadas 6und + chaufa, Búfalo 6und + chaufa, Maracuya 6und + chaufa, Mozzarella 8tj, Americana 8tj, Pepperoni 8tj, Hawaiana 8tj, Vegetariana 8tj
 
 Condiciones:
 - Precio: S/14.00 por plato
 - Horario válido: de 9:00am a 3:00pm
 - Modalidad: Solo para comer en el restaurante o para llevar (recojo en tienda).
-- No válido para delivery.
+-válido para delivery.
 
 ================================================================================
 NOTAS FINALES
