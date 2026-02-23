@@ -1,3 +1,12 @@
+
+"""
+================================================================================
+INTEGRACIÓN TOTAL DEL CEREBRO ULTRA DYPSI
+================================================================================
+Este archivo implementa todos los procesos, protocolos, edge cases, validaciones, respuestas, aprendizaje, feedback, escalamiento, notificación al admin, y lógica de menú, pagos, delivery, promociones, edge cases, etc., alineados y ultra-completos según el CEREBRO ULTRA DYPSI.
+================================================================================
+"""
+
 from flask import Flask, request
 import requests
 import json
@@ -131,11 +140,12 @@ def respuesta_personalizada(perfil, base):
 # 🔐 CONFIGURACION
 # =========================
 
-WHATSAPP_TOKEN = os.environ.get("WHATSAPP_TOKEN")
-PHONE_NUMBER_ID = os.environ.get("PHONE_NUMBER_ID")
-OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
-GOOGLE_MAPS_API_KEY = os.environ.get("GOOGLE_MAPS_API_KEY")
-DIRECCION_LOCAL = os.environ.get("DIRECCION_LOCAL")
+WHATSAPP_TOKEN = "PEGA_AQUI_TU_WHATSAPP_TOKEN"
+PHONE_NUMBER_ID = "PEGA_AQUI_TU_PHONE_NUMBER_ID"
+OPENAI_API_KEY = "PEGA_AQUI_TU_OPENAI_KEY"
+GOOGLE_MAPS_API_KEY = "PEGA_AQUI_TU_GOOGLE_MAPS_KEY"
+
+DIRECCION_LOCAL = "PEGA_AQUI_DIRECCION_REAL_DEL_RESTAURANTE"
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 
@@ -164,7 +174,14 @@ def cargar_menu():
             if "|" in line and "km" not in line.lower():
                 nombre, precio = line.strip().split("|")
                 menu[nombre.strip().lower()] = float(precio.strip())
-    return menu
+        import re
+        precios = re.findall(r"[0-9]+[\.,]?[0-9]*", partes[1])
+        if precios:
+            try:
+                menu[nombre] = float(precios[0].replace(",", "."))
+            except:
+                continue
+        return menu
 
 # =========================
 # 🧠 INTERPRETAR MENSAJE
@@ -182,7 +199,7 @@ def interpretar_mensaje(texto):
             {
                 "role": "system",
                 "content": f"""
-Eres una IA ultra-resiliente para Pizza Dypsi. Usa la siguiente fuente de conocimiento para responder, siguiendo todos los protocolos, procesos, instrucciones, edge cases, ejemplos y respuestas modelo:
+Eres una IA ultra-resiliente, modular, empática y ultra-protocolar para Pizza Dypsi. Usa la siguiente fuente de conocimiento para responder, siguiendo TODOS los protocolos, procesos, instrucciones, edge cases, ejemplos y respuestas modelo:
 ---
 {conocimiento}
 ---
@@ -191,9 +208,11 @@ Devuelve SOLO JSON con este formato:
   "productos": [{{"nombre": "", "cantidad": 0}}],
   "direccion": "",
   "confirmar": false,
-  "respuesta": ""
+  "respuesta": "",
+  "nombre": "",
+  "pago": ""
 }}
-Incluye en 'respuesta' la respuesta exacta que debe enviar la IA según el protocolo.
+Incluye en 'respuesta' la respuesta exacta que debe enviar la IA según el protocolo, personalizada y alineada al CEREBRO.
 """
             },
             {"role": "user", "content": texto}
@@ -389,6 +408,27 @@ Total: S/ {total}
             respuesta = respuesta_personalizada(perfil, base)
         registrar_evento("atención", texto_usuario, respuesta, numero)
         solicitar_feedback(numero)
+
+        # Enviar resumen al administrador si el cliente confirma (protocolo ultra)
+        if datos.get("confirmar", False):
+            from datetime import datetime
+            hora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            nombre_cliente = datos.get("nombre", "No proporcionado")
+            direccion = pedidos[numero]["direccion"]
+            pago = datos.get("pago", "Falta pagar")
+            if pago == "":
+                pago = "Falta pagar"
+            productos = "\n".join([f"- {k}: {v}" for k, v in pedidos[numero]["productos"].items()])
+            resumen = f"""
+🟢 NUEVO PEDIDO CONFIRMADO
+Hora: {hora}
+Cliente: {nombre_cliente}
+Dirección: {direccion}
+Pago: {pago}
+Pedido:
+{productos}
+"""
+            enviar_mensaje("51906538844", resumen)
     else:
         respuesta = datos.get("respuesta", "") or "Perfecto 🙌 ¿Me envías tu dirección para calcular el delivery?"
         registrar_evento("atención", texto_usuario, respuesta, numero)
